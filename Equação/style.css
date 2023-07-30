@@ -1,0 +1,50 @@
+*{
+    box-sizing: border-box;
+    margin: auto;
+}
+
+header{
+    margin-top: 20px;
+    width: 60%;
+    text-align: center;
+    background-color: rgb(86, 137, 95);
+    color: aliceblue;
+    padding: 5px;
+}
+
+form{
+    margin-top: 10px;
+    width: 60%;
+    text-align: center;
+}
+
+form img{
+    float: left;
+    
+}
+
+input{
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.campos{
+    margin-top: 5px;
+}
+
+.buttons{
+    margin-top: 10px;
+}
+
+button{
+    padding: 5px;
+    border-radius: 5px;
+    background-color: green;
+    color: aliceblue;
+    font-weight: bold;
+}
+
+#resultado{
+    margin-top: 10px;
+    font-weight: bold;
+}
