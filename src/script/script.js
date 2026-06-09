@@ -1,35 +1,106 @@
-"use strict";
+const form = document.querySelector('.inputs');
+const buttonLimpar = document.getElementById('limpar');
+const resultadoEl = document.getElementById('resultado-texto');
 
-let button = document.getElementById('calcular');
-let button_limpar = document.getElementById('limpar');
-
-button.addEventListener('click',calcular);
-button.addEventListener('click',limpar);
+form.addEventListener('submit', calcular);
+buttonLimpar.addEventListener('click', limpar);
 
 function calcular(e) {
-   e.preventDefault(); 
-   let num1 = parseFloat(document.getElementById('num1').value);
-   let num2 = parseFloat(document.getElementById('num2').value);
-   let num3 = parseFloat(document.getElementById('num3').value);
-   let delta = Math.pow(num2,2) - 4*num1*num3;
-   alert(`O Delta é: ${delta}`);
-   
-   if (delta > 0) {
-       let raiz1 = ((-num2 + Math.sqrt(delta))/(2*num1));
-       let raiz2 = ((-num2 - Math.sqrt(delta))/(2*num1));
-       document.getElementById("resultado").innerHTML = "Raiz 1 = " + raiz1 + "Raiz 2 = " + raiz2;
-   } else if (delta === 0) {
-    let raizUnica = ((-num2 + Math.sqrt(delta))/(2*num1));
-    document.getElementById("resultado").innerHTML = "Raiz única = " + raizUnica;
-   } else if (delta < 0) {
-     document.getElementById("resultado").innerHTML = "Delta < 0, não existem raizes no conjunto dos números reais.";
-   }
-   
+  e.preventDefault();
+
+  const valores = lerCoeficientes();
+
+  if (!valores) {
+    resultadoEl.innerText = 'Preencha todos os coeficientes.';
+    return;
+  }
+
+  const resultado = calcularBhaskara(valores.a, valores.b, valores.c);
+
+  renderResultado(resultado);
 }
 
-function limpar(e) {
-    document.getElementById('num1').value = ' ';
-    document.getElementById('num2').value = ' ';
-    document.getElementById('num3').value = ' ';
-    document.getElementById('resultado').innerHTML = null;
+function lerCoeficientes() {
+  const inputA = document.getElementById('num1');
+  const inputB = document.getElementById('num2');
+  const inputC = document.getElementById('num3');
+
+  if (!inputA.value || !inputB.value || !inputC.value) {
+    return null;
+  }
+
+  return {
+    a: Number(inputA.value),
+    b: Number(inputB.value),
+    c: Number(inputC.value)
+  };
+}
+
+function calcularBhaskara(a, b, c) {
+  if (a === 0) {
+    return { erro: 'Coeficiente A não pode ser 0.' };
+  }
+
+  const delta = calcularDelta(a, b, c);
+
+  if (delta > 0) {
+    const raizDelta = Math.sqrt(delta);
+
+    return {
+      tipo: 'duas_raizes',
+      raiz1: (-b + raizDelta) / (2 * a),
+      raiz2: (-b - raizDelta) / (2 * a)
+    };
+  }
+
+  if (delta === 0) {
+    return {
+      tipo: 'raiz_unica',
+      raiz: -b / (2 * a)
+    };
+  }
+
+  return {
+    tipo: 'sem_raizes'
+  };
+}
+
+function renderResultado(resultado) {
+  if (resultado.erro) {
+    resultadoEl.innerText = resultado.erro;
+    return;
+  }
+
+  switch (resultado.tipo) {
+    case 'duas_raizes':
+      resultadoEl.innerText =
+        `Raiz 1 = ${formatarNumero(resultado.raiz1)} | Raiz 2 = ${formatarNumero(resultado.raiz2)}`;
+      break;
+
+    case 'raiz_unica':
+      resultadoEl.innerText =
+        `Raiz única = ${formatarNumero(resultado.raiz)}`;
+      break;
+
+    case 'sem_raizes':
+      resultadoEl.innerText =
+        'Delta < 0, não existem raízes reais.';
+      break;
+  }
+}
+
+function formatarNumero(numero) {
+  return Number.isInteger(numero) ? String(numero) : numero.toFixed(2);
+}
+
+function calcularDelta(a, b, c) {
+  return Math.pow(b, 2) - 4 * a * c;
+}
+
+function limpar() {
+  document.getElementById('num1').value = '';
+  document.getElementById('num2').value = '';
+  document.getElementById('num3').value = '';
+
+  resultadoEl.innerText = '';
 }
